@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, confusion_matrix
+from datetime import date
 
 def load_column_value_from_file():
     column_value = dict()
@@ -59,3 +60,24 @@ def preprocess_data_input(data):
 def get_class_value(data):
     column_value = load_column_value_from_file()
     return column_value['Class'][data[0]]
+
+def get_age(year):
+    age = date.today().year - year
+    if age >= 10 and age <= 19:
+        return '10-19'
+    elif age >= 20 and age <= 29:
+        return '20-29'
+    elif age >= 30 and age <= 39:
+        return '30-39'
+    elif age >= 40 and age <= 49:
+        return '40-49'
+    elif age >= 50 and age <= 59:
+        return '50-59'
+    elif age >= 60 and age <= 69:
+        return '60-69'
+    elif age >= 70 and age <= 79:
+        return '70-79'
+    elif age >= 80 and age <= 89:
+        return '80-89'
+    else:
+        return '90-99'

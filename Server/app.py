@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from utils import *
 from dbconnect import db_connect
-from datetime import date
+from datetime import date, datetime
 
 app = Flask(__name__)
 
@@ -24,13 +24,14 @@ def get_patient_list():
     db = db_connect()
     if db != None:
         cursor = db.cursor()
-        query = 'SELECT patient_id, patient_name, patient_date_of_birth FROM patient_info'
+        query = 'SELECT id, fullname, date_of_birth, address FROM patient_info'
         cursor.execute(query)
-        for (patient_id, patient_name, patient_date_of_birth) in cursor:
+        for (id, fullname, date_of_birth, address) in cursor:
             patient = {
-                'patient_id': patient_id,
-                'patient_name': patient_name,
-                'patient_date_of_birth': patient_date_of_birth
+                'patient_id': id,
+                'patient_name': fullname,
+                'patient_date_of_birth': date_of_birth.strftime('%d/%m/%Y'),
+                'patient_address': address
             }
             patient_list.append(patient)
         cursor.close()
@@ -47,18 +48,23 @@ def create_patient_info():
     db = db_connect()
     if db != None:
         cursor = db.cursor()
-        query = 'INSERT INTO patient_info (patient_name, patient_date_of_birth, patient_year_of_birth) VALUES (%s, %s, %s)'
-        data = (input['name'], date(input['date_of_birth_year'], input['date_of_birth_month'], input['date_of_birth_date']), input['date_of_birth_year'])
-        cursor.execute(query, data)
-        emp_no = cursor.lastrowid
-        print(emp_no)
-        if emp_no != None:
+
+        query_patient_info = 'INSERT INTO patient_info (fullname, date_of_birth, address, create_at, update_at) VALUES (%s, %s, %s, %s, %s)'
+        data_patient_info = (input['name'], date(input['date_of_birth_year'], input['date_of_birth_month'], input['date_of_birth_date']), input['address'], datetime.now(), datetime.now())
+        cursor.execute(query_patient_info, data_patient_info)
+        new_patient_id = cursor.lastrowid
+        if new_patient_id != None:
+            query_medical_record = 'INSERT INTO medical_record (patientid, age, create_at, update_at) VALUES (%s, %s, %s, %s)'
+            data_medical_record = (new_patient_id, get_age(input['date_of_birth_year']), datetime.now(), datetime.now())
+            cursor.execute(query_medical_record, data_medical_record)
+            
             db.commit()
             cursor.close()
             response['error'] = None
         else:
             db.rollback()
             response['error'] = 'Can not create new patient.'
+
     else:
         response['error'] = 'Can not connect to database.'
     return jsonify(response)
