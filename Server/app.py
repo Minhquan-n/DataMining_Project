@@ -24,14 +24,15 @@ def get_patient_list():
     db = db_connect()
     if db != None:
         cursor = db.cursor()
-        query = 'SELECT id, fullname, date_of_birth, address FROM patient_info'
+        query = 'SELECT p.id, p.fullname, p.current_age, p.address, m.prediction FROM patient_info p LEFT JOIN medical_record m ON p.id = m.patientid'
         cursor.execute(query)
-        for (id, fullname, date_of_birth, address) in cursor:
+        for (id, fullname, curent_age, address, prediction) in cursor:
             patient = {
                 'patient_id': id,
                 'patient_name': fullname,
-                'patient_date_of_birth': date_of_birth.strftime('%d/%m/%Y'),
-                'patient_address': address
+                'current_age': curent_age,
+                'address': address,
+                'prediction': prediction
             }
             patient_list.append(patient)
         cursor.close()
@@ -49,8 +50,10 @@ def create_patient_info():
     if db != None:
         cursor = db.cursor()
 
-        query_patient_info = 'INSERT INTO patient_info (fullname, date_of_birth, address, create_at, update_at) VALUES (%s, %s, %s, %s, %s)'
-        data_patient_info = (input['name'], date(input['date_of_birth_year'], input['date_of_birth_month'], input['date_of_birth_date']), input['address'], datetime.now(), datetime.now())
+        query_patient_info = 'INSERT INTO patient_info (fullname, date_of_birth, current_age, address, phone, create_at, update_at) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+        data_patient_info = (input['name'], date(input['date_of_birth_year'], input['date_of_birth_month'], input['date_of_birth_date']),
+                            date.today().year - input['date_of_birth_year'], input['address'],
+                            input['phone'], datetime.now(), datetime.now())
         cursor.execute(query_patient_info, data_patient_info)
         new_patient_id = cursor.lastrowid
         if new_patient_id != None:
@@ -67,6 +70,37 @@ def create_patient_info():
 
     else:
         response['error'] = 'Can not connect to database.'
+    return jsonify(response)
+
+# Lay tat ca thong tin cua benh nhan theo id
+@app.route('/api/patient/<id>', methods=['GET'])
+def get_patient_detail(id):
+    response = dict()
+    db = db_connect()
+    if db != None:
+        cursor = db.cursor()
+        select_col = 'p.id, p.fullname, p.date_of_birth, p.current_age, p.address, m.age, m.menopause, m.tumor_size, m.inv_node, m.node_caps, m.deg_malig, m.breast, m.breast_quad, m.irradiar, m.prediction'
+        query = f'SELECT {select_col} FROM patient_info p LEFT JOIN medical_record m ON p.id = m.patientid WHERE p.id = {id}'
+        cursor.execute(query)
+        for item in cursor:
+            info = {
+                'id': item[0],
+                'fullname': item[1],
+                'date_of_birth': item[2].strftime('%d/%m/%Y'),
+                'current_age': item[3],
+                'address': item[4],
+                'age': item[5],
+                'menopause': item[6],
+                'tumor_size': item[7],
+                'inv_nodes': item[8],
+                'node_caps': item[9],
+                'deg_malig': item[10],
+                'breast': item[11],
+                'breast_quad': item[12],
+                'irradiat': item[13],
+                'prediction': item[14]
+            }
+            response['patient_info'] = info
     return jsonify(response)
 
 # Du doan loai UTV
