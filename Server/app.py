@@ -79,7 +79,7 @@ def get_patient_detail(id):
     db = db_connect()
     if db != None:
         cursor = db.cursor()
-        select_col = 'p.id, p.fullname, p.date_of_birth, p.current_age, p.address, m.age, m.menopause, m.tumor_size, m.inv_node, m.node_caps, m.deg_malig, m.breast, m.breast_quad, m.irradiar, m.prediction'
+        select_col = 'p.id, p.fullname, p.date_of_birth, p.current_age, p.address, m.age, m.menopause, m.tumor_size, m.inv_node, m.node_caps, m.deg_malig, m.breast, m.breast_quad, m.irradiar, m.prediction, m.medical_record_id'
         query = f'SELECT {select_col} FROM patient_info p LEFT JOIN medical_record m ON p.id = m.patientid WHERE p.id = {id}'
         cursor.execute(query)
         for item in cursor:
@@ -98,10 +98,42 @@ def get_patient_detail(id):
                 'breast': item[11],
                 'breast_quad': item[12],
                 'irradiat': item[13],
-                'prediction': item[14]
+                'prediction': item[14],
+                'medical_record_id': item[15]
             }
             response['patient_info'] = info
     return jsonify(response)
+
+@app.route('/api/patient/medicalrecord/<mrid>', methods=['POST', 'PUT'])
+def edit_medical_record(mrid):
+    if request.method == 'POST':
+        input = request.get_json()
+        response = {'error': None}
+        db = db_connect()
+        if db != None:
+            cursor = db.cursor()
+            query = 'UPDATE medical_record SET menopause=%s, tumor_size=%s, inv_node=%s, node_caps=%s, deg_malig=%s, breast=%s, breast_quad=%s, irradiat=%s, update_at=%s WHERE medical_record_id = %s'
+            data = (input['menopause'], input['tumor_size'], input['inv_node'], input['node_caps'], input['deg_malig'], input['breast'], input['breast_quad'], input['irradiat'], datetime.now(), mrid)
+            cursor.execute(query, data)
+            cursor.close()
+        else:
+            response['error'] = 'Can not connect to database.'
+        db.close()
+        return jsonify(response)
+    elif request.method == 'PUT':
+        input = request.get_json()
+        response = {'error': None}
+        db = db_connect()
+        if db != None:
+            cursor = db.cursor()
+            query = 'UPDATE medical_record SET prediction=%s, note=%s, update_at=%s WHERE medical_record_id=%s'
+            data = (input['prediction'], input['note'], datetime.now(), mrid)
+            cursor.execute(query, data)
+            cursor.close()
+        else:
+            response['error'] = 'Can not connect to database'
+        db.close()
+        return jsonify(response)
 
 # Du doan loai UTV
 @app.route('/api/predict', methods=['POST'])
