@@ -1,0 +1,133 @@
+/* Khai bao color paletts */
+:root {
+    --color-black: #181818;
+    --color-black-shadow: #0000000d;
+    --color-black-shadow-hard: #00000026;
+  
+    --color-white: #ffffff;
+    --color-white-soft: #f5f6fa;
+    --color-white-brown: #efd6c0;
+  
+    --color-brown: #7c3e15;
+    --color-brown-bg: #aa6130;
+    --color-brown-shadow: #7c3e1580;
+    --color-brown-light: #c19268;
+    --color-brown-light-op: rgba(193, 146, 104, 0.9);
+  
+    --color-gray: #808080;
+    --color-gray-opacity-6: rgba(128, 128, 128,0.6);
+
+    --bg-blue: #0d45fd;
+    --bg-blue-soft: #2d9efa;
+    
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  body {
+    background-color: var(--color-white-soft);
+  }
+  
+  header {
+    width: 180px;
+    height: 100%;
+    background-color: var(--bg-blue);
+    box-shadow: 0 0 10px 4px var(--color-black-shadow);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    z-index: 50;
+    overflow-x: hidden;
+    overflow: scroll;
+    transition: all 0.3s ease;
+  }
+  
+  header::-webkit-scrollbar {
+    display: none;
+  }
+  
+  main {
+    width: 100%;
+    padding: 20px 10px 40px 220px;
+    transition: all 0.5s ease;
+  }
+  
+  h1 {
+    font-weight: bolder;
+    color: var(--color-black);
+  }
+  
+  h3 {
+    font-weight: bolder;
+    font-size: large;
+    color: var(--color-gray);
+  }
+  
+  h4 {
+    font-weight: bolder;
+    font-size: larger;
+    color: var(--color-black);
+  }
+  
+  .fullpage_bg {
+    display: none;
+    z-index: 51;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+  }
+  
+  @media (max-width: 1100px) and (min-width: 600px) {
+    header {
+      width: 55px;
+      height: 100%;
+      background-color: var(--color-brown-bg);
+      transition: all 0.5s ease;
+    }
+  
+    header:hover {
+      width: 220px;
+      transition: all 0.5s ease;
+    }
+  
+    main {
+      padding-left: 70px;
+      transition: all 0.5s ease;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    header {
+      width: 100%;
+      height: 60px;
+      padding: 0 10px;
+      background-color: var(--color-brown-bg);
+      transition: all 0.5s ease;
+      display: grid;
+      grid-template-areas: 'logo navbar user';
+      grid-template-columns: 5fr 1fr 1fr;
+      align-items: center;
+    }
+  
+    main {
+      width: 100%;
+      padding: 70px 10px 10px 10px;
+      transition: all 0.5s ease;
+    }
+  }

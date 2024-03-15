@@ -1,0 +1,86 @@
+@import '@/assets/base.css';
+
+#header_logo {
+    height: 15%;
+    width: 100%;
+    padding: 15px 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-white);
+}
+
+#header_navigation {
+    margin: 5px 0;
+    padding: 5px 0;
+    overflow: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+}
+
+#header_navigation::-webkit-scrollbar {
+    display: none;
+}
+
+.header_navigation_menu {
+    display: none;
+}
+
+.nav_item {
+    width: 200px;
+    white-space: nowrap;
+    color: var(--color-white);
+    text-decoration: none;
+    text-align: left;
+    margin: 5px 2px;
+    padding: 8px 5px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.nav_item:hover {
+    color: var(--color-brown-light);
+    transition: all 0.3s ease;
+}
+
+.nav_item_active {
+    background-color: var(--bg-blue-soft);
+    color: var(--color-white);
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.nav_item_icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    margin: 0 22px 0 12px;
+}
+
+.nav_item .nav_avt {
+    margin: 0 15px 0 3px;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+#header_user {
+    height: 20%;
+    width: 100%;
+    border-top: 2px solid var(--color-black-shadow);
+    position: absolute;
+    bottom: 0;
+}
+
+#header_user #header_user_avt, #header_user #header_horizontal_user {
+    display: none;
+}
